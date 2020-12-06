@@ -40,6 +40,7 @@ yrep = as_draws_matrix(fit1$draws(c("yrep")))
 ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
 ppc_stat_2d(D, yrep)
 
+
 # rounding to 0.1 cm
 D2 <- round(D, 1)
 data2 <- list(N = N, D = D2)
@@ -51,6 +52,7 @@ fit2$summary(c("alpha", "sigma"))
 yrep = as_draws_matrix(fit2$draws(c("yrep")))
 ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
 ppc_stat_2d(D, yrep)
+
 
 # rounding to 2 cm
 round_n <- function(x, n) {
@@ -79,6 +81,7 @@ fit3$summary(c("alpha", "sigma"))
 yrep = as_draws_matrix(fit3$draws(c("yrep")))
 ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
 ppc_stat_2d(D, yrep)
+
 
 # rounding to 5 cm
 d4 <- round_n(D, 5)
