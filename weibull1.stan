@@ -11,3 +11,10 @@ parameters {
 model {
   D ~ weibull(alpha, sigma);
 }
+
+generated quantities {
+  vector<lower = 0>[N] yrep;
+
+  for (n in 1:N)
+    yrep[n] = weibull_rng(alpha, sigma);
+}

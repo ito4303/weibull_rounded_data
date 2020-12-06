@@ -2,10 +2,11 @@
 # Fit rounded tree diameter data to Weibull model
 #
 
-library(ggplot2)
 library(cmdstanr)
-set_cmdstan_path("~/.cmdstan/cmdstan-2.25.0")
+set_cmdstan_path("/usr/local/cmdstan")
 options(mc.cores = parallel::detectCores())
+library(bayesplot)
+library(posterior)
 
 # generate simulated data
 set.seed(123)
@@ -34,7 +35,10 @@ model1 <- cmdstan_model("weibull1.stan")
 fit1 <- model1$sample(data = data1, refresh = 1000,
                       chains = 4,
                       iter_sampling = 1000, iter_warmup = 1000)
-fit1$summary()
+fit1$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit1$draws(c("yrep")))
+ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D, yrep)
 
 # rounding to 0.1 cm
 D2 <- round(D, 1)
@@ -43,8 +47,10 @@ data2 <- list(N = N, D = D2)
 fit2 <- model1$sample(data = data2, refresh = 1000,
                       chains = 4,
                       iter_sampling = 1000, iter_warmup = 1000)
-fit2$summary()
-
+fit2$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit2$draws(c("yrep")))
+ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D, yrep)
 
 # rounding to 2 cm
 round_n <- function(x, n) {
@@ -69,7 +75,10 @@ model2 <- cmdstan_model("weibull2.stan")
 fit3 <- model2$sample(data = data3, refresh = 1000,
                       chains = 4,
                       iter_sampling = 1000, iter_warmup = 1000)
-fit3$summary()
+fit3$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit3$draws(c("yrep")))
+ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D, yrep)
 
 # rounding to 5 cm
 d4 <- round_n(D, 5)
@@ -77,6 +86,7 @@ data4 <- list(K = d4$n_classes, B = d4$boundary, D = d4$y)
 fit4 <- model2$sample(data = data4, refresh = 1000,
                       chains = 4,
                       iter_sampling = 1000, iter_warmup = 1000)
-fit4$summary()
-
-
+fit4$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit4$draws(c("yrep")))
+ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D, yrep)

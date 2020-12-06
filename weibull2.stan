@@ -7,6 +7,7 @@ data {
 transformed data {
   // append one 0 for the class larger than the B[K]
   int D2[K + 1] = append_array(D, {0});
+  int N = sum(D);
 }
 
 parameters {
@@ -26,4 +27,11 @@ transformed parameters {
 
 model {
   D2 ~ multinomial(p);
+}
+
+generated quantities {
+  vector<lower = 0>[N] yrep;
+
+  for (n in 1:N)
+    yrep[n] = weibull_rng(alpha, sigma);
 }
