@@ -10,7 +10,7 @@ library(posterior)
 set.seed(1)
 
 # Number of replications
-R <- 1000
+R <- 100
 
 # Function to generate rounded data
 round_n <- function(x, n) {
@@ -34,10 +34,10 @@ sim <- function(N = 100, alpha = 2, sigma = 10) {
   est <- rep(NA, 8)
 
   # Initial values of MCMC
-  inits <- list(list(alpha = 0.1, sigma = 18),
-                list(alpha = 1.0, sigma = 12),
-                list(alpha = 2.0, sigma = 10),
-                list(alpha = 2.5, sigma = 6))
+  inits <- list(list(alpha = 0.1, sigma = 4),
+                list(alpha = 1, sigma = 8),
+                list(alpha = 2, sigma = 12),
+                list(alpha = 3, sigma = 16))
 
   # original data
   D <- rweibull(N, alpha, sigma) # tree diameter data (cm)
@@ -85,7 +85,7 @@ sim <- function(N = 100, alpha = 2, sigma = 10) {
                         refresh = 0, show_messages = FALSE,
                         chains = 4,
                         iter_sampling = 2000, iter_warmup = 2000,
-                        adapt_delta = 0.95)
+                        adapt_delta = 0.98)
   m <- fit4$summary(c("alpha", "sigma"), mean, rhat)
   if (max(m$rhat) > 1.1)
     stop("rhat > 1.1; ", m$rhat)
@@ -111,14 +111,28 @@ apply(sim2, 1, sd)
 # Simulation 3
 # N = 30, alpha = 4, sigma = 15
 print("simulation 3")
-sim3 <- replicate(R, sim(N = 30, alpha = 4, sigma = 15))
+sim3 <- replicate(R, sim(N = 30, alpha = 4, sigma = 12))
 apply(sim3, 1, mean)
 apply(sim3, 1, sd)
 
 # Simulation 4
 # N = 300, alpha = 4, sigma = 15
 print("simulation 4")
-sim4 <- replicate(R, sim(N = 300, alpha = 4, sigma = 15))
+sim4 <- replicate(R, sim(N = 300, alpha = 4, sigma = 12))
+apply(sim4, 1, mean)
+apply(sim4, 1, sd)
+
+# Simulation 5
+# N = 30, alpha = 5, sigma = 20
+print("simulation 3")
+sim3 <- replicate(R, sim(N = 30, alpha = 5, sigma = 20))
+apply(sim3, 1, mean)
+apply(sim3, 1, sd)
+
+# Simulation 6
+# N = 300, alpha = 5, sigma = 20
+print("simulation 4")
+sim4 <- replicate(R, sim(N = 300, alpha = 5, sigma = 20))
 apply(sim4, 1, mean)
 apply(sim4, 1, sd)
 

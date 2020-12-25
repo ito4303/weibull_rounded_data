@@ -11,5 +11,5 @@ parameters {
 model {
   D ~ weibull(alpha, sigma);
   alpha ~ normal(0, 10);
-  sigma ~ normal(0, 30);
+  sigma ~ normal(0, 40);
 }

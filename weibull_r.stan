@@ -28,5 +28,5 @@ transformed parameters {
 model {
   D2 ~ multinomial(p);
   alpha ~ normal(0, 10);
-  sigma ~ normal(0, 30);
+  sigma ~ normal(0, 40);
 }
