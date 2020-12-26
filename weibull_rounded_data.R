@@ -3,8 +3,8 @@
 #
 
 library(cmdstanr)
-set_cmdstan_path("/usr/local/cmdstan")
 options(mc.cores = parallel::detectCores())
+library(ggplot2)
 library(bayesplot)
 library(posterior)
 
