@@ -58,7 +58,7 @@ ppc_stat_2d(D, yrep)
 round_n <- function(x, n) {
   if (n != round(n))
     stop("n must be an integer number.")
-  max_B <- floor(max(D) / n) * n + n
+  max_B <- floor(max(x) / n) * n + n
   boundary <- seq(0, max_B, n)
   n_classes <- length(boundary) - 1
   y <- rep(0, n_classes)

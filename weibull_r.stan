@@ -27,11 +27,6 @@ transformed parameters {
 
 model {
   D2 ~ multinomial(p);
-}
-
-generated quantities {
-  vector<lower = 0>[N] yrep; // replicated data for PPC
-
-  for (n in 1:N)
-    yrep[n] = weibull_rng(alpha, sigma);
+  alpha ~ normal(0, 10);
+  sigma ~ normal(0, 40);
 }
