@@ -12,7 +12,7 @@ library(posterior)
 set.seed(123)
 
 N <- 100     # sample size
-alpha <- 2.  # shape parameter of Weibull distribution
+alpha <- 2   # shape parameter of Weibull distribution
 sigma <- 10  # scale parameter of Weibull distribution
 
 D <- rweibull(N, alpha, sigma) # tree diameter data (cm)
@@ -93,3 +93,77 @@ fit4$summary(c("alpha", "sigma"))
 yrep = as_draws_matrix(fit4$draws(c("yrep")))
 ppc_dens_overlay(D, yrep[sample(nrow(yrep), 400), ])
 ppc_stat_2d(D, yrep)
+
+
+
+#
+# small sample
+#
+
+
+set.seed(1)
+N <- 10      # sample size
+alpha <- 2   # shape parameter of Weibull distribution
+sigma <- 10  # scale parameter of Weibull distribution
+
+D_small <- rweibull(N, alpha, sigma) # tree diameter data (cm)
+
+ggplot(data.frame(Diameter = D_small)) +
+  geom_histogram(aes(x = Diameter), binwidth = 1, boundary = 0) +
+  labs(x = "Diameter (cm)", y = "Frequency")
+
+ggplot(data.frame(Diameter = D_small)) +
+  geom_histogram(aes(x = Diameter), binwidth = 2, boundary = 0) +
+  labs(x = "Diameter (cm)", y = "Frequency")
+
+ggplot(data.frame(Diameter = D_small)) +
+  geom_histogram(aes(x = Diameter), binwidth = 5, boundary = 0) +
+  labs(x = "Diameter (cm)", y = "Frequency")
+
+data1 <- list(N = N, D = D_small)
+fit1 <- model1$sample(data = data1, refresh = 1000,
+                      chains = 4,
+                      iter_sampling = 1000, iter_warmup = 1000)
+fit1$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit1$draws(c("yrep")))
+ppc_dens_overlay(D_small, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D_small, yrep)
+
+
+# rounding to 0.1 cm
+D2 <- round(D_small, 1)
+data2 <- list(N = N, D = D2)
+# fit to the same model
+fit2 <- model1$sample(data = data2, refresh = 1000,
+                      chains = 4,
+                      iter_sampling = 1000, iter_warmup = 1000)
+fit2$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit2$draws(c("yrep")))
+ppc_dens_overlay(D_small, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D_small, yrep)
+
+
+# rounding to 2 cm
+d3 <- round_n(D_small, 2)
+data3 <- list(K = d3$n_classes, B = d3$boundary, D = d3$y)
+model2 <- cmdstan_model("weibull2.stan")
+fit3 <- model2$sample(data = data3, refresh = 1000,
+                      chains = 4,
+                      iter_sampling = 1000, iter_warmup = 1000)
+fit3$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit3$draws(c("yrep")))
+ppc_dens_overlay(D_small, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D_small, yrep)
+
+
+# rounding to 5 cm
+d4 <- round_n(D_small, 5)
+data4 <- list(K = d4$n_classes, B = d4$boundary, D = d4$y)
+fit4 <- model2$sample(data = data4, refresh = 1000,
+                      chains = 4,
+                      iter_sampling = 1000, iter_warmup = 1000,
+                      adapt_delta = 0.9)
+fit4$summary(c("alpha", "sigma"))
+yrep = as_draws_matrix(fit4$draws(c("yrep")))
+ppc_dens_overlay(D_small, yrep[sample(nrow(yrep), 400), ])
+ppc_stat_2d(D_small, yrep)
