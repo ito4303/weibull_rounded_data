@@ -1,5 +1,5 @@
 #
-# Fit rounded tree diameter data to Weibull model
+# A simulation to fit rounded tree diameter data to Weibull model
 #
 
 library(cmdstanr)
