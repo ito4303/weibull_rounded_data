@@ -7,7 +7,7 @@ options(mc.cores = parallel::detectCores())
 library(posterior)
 
 # Set seed of RNG
-set.seed(314)
+set.seed(123)
 
 # Number of replications
 R <- 1000
@@ -33,11 +33,11 @@ round_n <- function(x, n) {
 sim_fun <- function(seed = 1, N = 100, alpha = 2, sigma = 10) {
   est <- rep(NA, 8)
 
-  # Initial values of MCMC
-  inits <- list(list(alpha = 0.1, sigma = 4),
-                list(alpha = 1, sigma = 8),
-                list(alpha = 2, sigma = 12),
-                list(alpha = 3, sigma = 16))
+  # Initial values for MCMC
+  inits <- list(list(alpha = 1.1, sigma = 4),
+                list(alpha = 2.2, sigma = 8),
+                list(alpha = 3.3, sigma = 12),
+                list(alpha = 4.4, sigma = 16))
 
   # original data
   D <- rweibull(N, alpha, sigma) # tree diameter data (cm)
@@ -109,6 +109,8 @@ val_N <- c(30, 300)
 val_alpha <- c(2, 4, 6)
 val_sigma <- c(8, 14, 20)
 
+print(date())
+
 # Simulation 1
 sim[[1]] <- sapply(1:R,
                    function(i)
@@ -169,4 +171,5 @@ apply(!is.na(sim[[6]]), 1, sum)
 apply(sim[[6]], 1, mean, na.rm = TRUE)
 apply(sim[[6]], 1, sd, na.rm = TRUE)
 
+print(date())
 save(sim, file = "sim_results.RData")

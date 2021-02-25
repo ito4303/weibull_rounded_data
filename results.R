@@ -25,18 +25,31 @@ tbl_alpha <- results %>%
 tbl_sigma <- results %>%
   dplyr::filter(var == "sigma")
 
+# n
+tbl_alpha %>%
+  dplyr::select(simulation, data_type, num) %>%
+  tidyr::pivot_wider(names_from = data_type,
+                     values_from = num)
+
+# alpha: mean
 tbl_alpha %>%
   tidyr::pivot_wider(names_from = data_type,
                      values_from = c(num, mean, sd)) %>%
   dplyr::select(starts_with("mean"))
+
+# alpha: sd
 tbl_alpha %>%
   tidyr::pivot_wider(names_from = data_type,
                      values_from = c(num, mean, sd)) %>%
   dplyr::select(starts_with("sd"))
+
+# sigma: mean
 tbl_sigma %>%
   tidyr::pivot_wider(names_from = data_type,
                      values_from = c(num, mean, sd)) %>%
   dplyr::select(starts_with("mean"))
+
+# sigma: sd
 tbl_sigma %>%
   tidyr::pivot_wider(names_from = data_type,
                      values_from = c(num, mean, sd)) %>%
