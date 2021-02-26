@@ -7,7 +7,7 @@ options(mc.cores = parallel::detectCores())
 library(posterior)
 
 # Set seed of RNG
-set.seed(314)
+set.seed(123)
 
 # Number of replications
 R <- 1000
@@ -33,11 +33,11 @@ round_n <- function(x, n) {
 sim_fun <- function(seed = 1, N = 100, alpha = 2, sigma = 10) {
   est <- rep(NA, 8)
 
-  # Initial values of MCMC
-  inits <- list(list(alpha = 0.1, sigma = 4),
-                list(alpha = 1, sigma = 8),
-                list(alpha = 2, sigma = 12),
-                list(alpha = 3, sigma = 16))
+  # Initial values for MCMC
+  inits <- list(list(alpha = 1.1, sigma = 4),
+                list(alpha = 2.2, sigma = 8),
+                list(alpha = 3.3, sigma = 12),
+                list(alpha = 4.4, sigma = 16))
 
   # original data
   D <- rweibull(N, alpha, sigma) # tree diameter data (cm)
@@ -105,58 +105,71 @@ sim_fun <- function(seed = 1, N = 100, alpha = 2, sigma = 10) {
 
 sim <- vector("list", 6)
 
+val_N <- c(30, 300)
+val_alpha <- c(2, 4, 6)
+val_sigma <- c(8, 14, 20)
+
+print(date())
+
 # Simulation 1
-# N = 30, alpha = 2, sigma = 8
 sim[[1]] <- sapply(1:R,
                    function(i)
-                     sim_fun(i, N = 30, alpha = 2, sigma = 8))
+                     sim_fun(i, N = val_N[1],
+                             alpha = val_alpha[1],
+                             sigma = val_sigma[1]))
 apply(!is.na(sim[[1]]), 1, sum)
 apply(sim[[1]], 1, mean, na.rm = TRUE)
 apply(sim[[1]], 1, sd, na.rm = TRUE)
 
 # Simulation 2
-# N = 300, alpha = 2, sigma = 8
 sim[[2]] <- sapply(1:R,
                    function(i)
-                     sim_fun(i, N = 300, alpha = 2, sigma = 8))
+                     sim_fun(i, N = val_N[2],
+                             alpha = val_alpha[1],
+                             sigma = val_sigma[1]))
 apply(!is.na(sim[[2]]), 1, sum)
 apply(sim[[2]], 1, mean, na.rm = TRUE)
 apply(sim[[2]], 1, sd, na.rm = TRUE)
 
 # Simulation 3
-# N = 30, alpha = 4, sigma = 12
 sim[[3]] <- sapply(1:R,
                    function(i)
-                     sim_fun(i, N = 30, alpha = 4, sigma = 12))
+                     sim_fun(i, N = val_N[1],
+                             alpha = val_alpha[2],
+                             sigma = val_sigma[2]))
 apply(!is.na(sim[[3]]), 1, sum)
 apply(sim[[3]], 1, mean, na.rm = TRUE)
 apply(sim[[3]], 1, sd, na.rm = TRUE)
 
 # Simulation 4
-# N = 300, alpha = 4, sigma = 12
 sim[[4]] <- sapply(1:R,
                    function(i)
-                     sim_fun(i, N = 300, alpha = 4, sigma = 12))
+                     sim_fun(i, N = val_N[2],
+                             alpha = val_alpha[2],
+                             sigma = val_sigma[2]))
 apply(!is.na(sim[[4]]), 1, sum)
 apply(sim[[4]], 1, mean, na.rm = TRUE)
 apply(sim[[4]], 1, sd, na.rm = TRUE)
 
 # Simulation 5
-# N = 30, alpha = 5, sigma = 20
 sim[[5]] <- sapply(1:R,
                    function(i)
-                     sim_fun(i, N = 30, alpha = 5, sigma = 20))
+                     sim_fun(i, N = val_N[1],
+                             alpha = val_alpha[3],
+                             sigma = val_sigma[3]))
 apply(!is.na(sim[[5]]), 1, sum)
 apply(sim[[5]], 1, mean, na.rm = TRUE)
 apply(sim[[5]], 1, sd, na.rm = TRUE)
 
 # Simulation 6
-# N = 300, alpha = 5, sigma = 20
 sim[[6]] <- sapply(1:R,
                    function(i)
-                     sim_fun(i, N = 300, alpha = 5, sigma = 20))
+                     sim_fun(i, N = val_N[2],
+                             alpha = val_alpha[3],
+                             sigma = val_sigma[3]))
 apply(!is.na(sim[[6]]), 1, sum)
 apply(sim[[6]], 1, mean, na.rm = TRUE)
 apply(sim[[6]], 1, sd, na.rm = TRUE)
 
+print(date())
 save(sim, file = "sim_results.RData")
