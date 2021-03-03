@@ -1,7 +1,12 @@
+/*
+ * weibull_r.stan
+ * fit tree diameter class to Weibull distriution
+ */
+
 data {
-  int<lower = 0> K;       // number of the classes
-  vector<lower = 0>[K] B; // boundary of the classes
-  int<lower = 0> D[K];    // number of trees within each class
+  int<lower = 0> K;       // number of classes
+  vector<lower = 0>[K] B; // boundary of classes
+  int<lower = 0> D[K];    // number of trees for each class
 }
 
 transformed data {
