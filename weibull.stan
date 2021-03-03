@@ -1,6 +1,11 @@
+/*
+ * weibull.stan
+ * fit tree diameter distribution to Weibull distriution
+ */
+
 data {
   int<lower = 0> N;       // number of trees
-  vector<lower = 0>[N] D; // tree diameter data
+  vector<lower = 0>[N] D; // tree diameters
 }
 
 parameters {
