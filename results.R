@@ -56,7 +56,7 @@ results %>%
                      values_from = num) %>%
   dplyr::select(-var)
 
-# differences comparing the correspoinding results with double precision
+# differences comparing the corresponding results with double precision
 n_iter <- ncol(sim[[1]])
 diff_alpha <- diff_sigma <- structure(rep(NA, n_sim * (n_type - 1) * n_iter),
                                       dim = c(n_sim, n_type - 1, n_iter))
