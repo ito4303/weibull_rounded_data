@@ -2,6 +2,7 @@ library(dplyr)
 library(tibble)
 library(tidyr)
 library(stringr)
+library(ggplot2)
 
 load("sim_results.RData")
 
@@ -68,12 +69,19 @@ for (s in seq_len(n_sim)) {
 }
 
 # mean
-tibble(sim = rep(seq_len(n_sim), (n_type - 1) * n_iter),
+diff_tbl <- tibble(sim = rep(seq_len(n_sim), (n_type - 1) * n_iter),
                    type = rep(rep(2:n_type, each = n_sim), n_iter),
                    diff_alpha = c(diff_alpha),
-                   diff_sigma = c(diff_sigma)) %>%
+                   diff_sigma = c(diff_sigma))
+diff_tbl %>%
   dplyr::group_by(sim, type) %>%
   dplyr::summarize(alpha = mean(diff_alpha, na.rm = TRUE),
                    sigma = mean(diff_sigma, na.rm = TRUE)) %>%
   tidyr::pivot_wider(names_from = type,
                      values_from = c(alpha, sigma))
+ggplot(diff_tbl) +
+  geom_histogram(aes(x = diff_alpha), binwidth = 0.1) +
+  facet_grid(sim ~ type)
+ggplot(diff_tbl) +
+  geom_histogram(aes(x = diff_sigma), binwidth = 0.1) +
+  facet_grid(sim ~ type)
