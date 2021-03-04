@@ -55,3 +55,25 @@ results %>%
   tidyr::pivot_wider(names_from = type,
                      values_from = num) %>%
   dplyr::select(-var)
+
+# differences comparing the correspoinding results with double precision
+n_iter <- ncol(sim[[1]])
+diff_alpha <- diff_sigma <- structure(rep(NA, n_sim * (n_type - 1) * n_iter),
+                                      dim = c(n_sim, n_type - 1, n_iter))
+for (s in seq_len(n_sim)) {
+  for (t in seq_len(n_type - 1)) {
+    diff_alpha[s, t, ] <- sim[[s]][t * 2 + 1, ] - sim[[s]][1, ]
+    diff_sigma[s, t, ] <- sim[[s]][t * 2 + 2, ] - sim[[s]][2, ]
+  }
+}
+
+# mean
+tibble(sim = rep(seq_len(n_sim), (n_type - 1) * n_iter),
+                   type = rep(rep(2:n_type, each = n_sim), n_iter),
+                   diff_alpha = c(diff_alpha),
+                   diff_sigma = c(diff_sigma)) %>%
+  dplyr::group_by(sim, type) %>%
+  dplyr::summarize(alpha = mean(diff_alpha, na.rm = TRUE),
+                   sigma = mean(diff_sigma, na.rm = TRUE)) %>%
+  tidyr::pivot_wider(names_from = type,
+                     values_from = c(alpha, sigma))
