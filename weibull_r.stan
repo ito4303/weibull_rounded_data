@@ -5,14 +5,13 @@
 
 data {
   int<lower = 0> K;       // number of classes
-  vector<lower = 0>[K] B; // boundary of classes
+  positive_ordered[K] B;  // boundary of classes
   int<lower = 0> D[K];    // number of trees for each class
 }
 
 transformed data {
   // append one 0 for the class larger than the B[K]
-  int D2[K + 1] = append_array(D, {0});
-  int N = sum(D);
+  array[K + 1] int D2 = append_array(D, {0});
 }
 
 parameters {
@@ -23,11 +22,11 @@ parameters {
 transformed parameters {
   simplex[K + 1] p;     // probs for each class
 
-  p[1] = weibull_cdf(B[1], alpha, sigma); // 0 -- B[1]
+  p[1] = weibull_cdf(B[1] | alpha, sigma); // 0 -- B[1]
   for (k in 2:K)
-    p[k] = weibull_cdf(B[k], alpha, sigma)
-           - weibull_cdf(B[k - 1], alpha, sigma); // B[1] -- B[K]
-  p[K + 1] = 1 - weibull_cdf(B[K], alpha, sigma); // B[K] --
+    p[k] = weibull_cdf(B[k] | alpha, sigma)
+           - weibull_cdf(B[k - 1] | alpha, sigma); // B[1] -- B[K]
+  p[K + 1] = 1 - weibull_cdf(B[K] | alpha, sigma); // B[K] --
 }
 
 model {
